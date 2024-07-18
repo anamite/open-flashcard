@@ -1,0 +1,40 @@
+import csv
+import re
+
+# Define a function to remove markdown from a string
+def remove_markdown(text):
+    # Remove markdown URLs
+    text = re.sub(r'\[.*?\]\(.*?\)', '', text)
+    # Remove markdown headers
+    text = re.sub(r'#+ ', '', text)
+    # Remove markdown bold
+    text = re.sub(r'\*\*.*?\*\*', '', text)
+    # Remove markdown italic
+    text = re.sub(r'\*.*?\*', '', text)
+    # Remove markdown inline code
+    text = re.sub(r'`.*?`', '', text)
+    # Remove markdown blockquotes
+    text = re.sub(r'> .*', '', text)
+    # Remove markdown lists
+    text = re.sub(r'- .*', '', text)
+    # Remove markdown tables
+    text = re.sub(r'\|.*\|', '', text)
+    return text
+
+# Open the CSV file
+with open('cards.csv', 'r') as csv_file:
+    csv_reader = csv.reader(csv_file)
+    rows = list(csv_reader)
+
+# Remove markdown from the answer part of the CSV file
+for row in rows:
+    row[1] = remove_markdown(row[1])
+
+# Write the cleaned data to a new CSV file
+with open('cleaned_cards.csv', 'w', newline='') as csv_file:
+    csv_writer = csv.writer(csv_file)
+    csv_writer.writerows(rows)
+
+# Print a success message
+print("The markdown part in the answer part of the CSV file has been successfully removed and saved as cleaned_cards.csv")
+
